@@ -75,7 +75,7 @@ const promptQuantity = (idQuantObject) => {
       name: 'quant',
       message: 'How many would you like to purchase?',
       validate: input => {
-        if (isNaN(input)) return 'Please enter a number.'
+        if (isNaN(input) || input < 1 || input % 1 !== 0) return 'Please enter a positive, whole number.'
         if (input > stockQuantity) return `I'm sorry, we only have ${stockQuantity} in stock.`
         return true;
       }      
@@ -88,12 +88,46 @@ const promptQuantity = (idQuantObject) => {
   })
 }
 
+const placeOrder = orderObject => {
+  return new Promise((resolve, reject) => {
+    let id = orderObject.id
+    let quant = orderObject.quant
+    connection.query(
+      'UPDATE products SET stock_quantity = stock_quantity - ? WHERE item_id = ?', [quant, id], (err, res) => {
+        if (err) reject(err)
+        resolve(res)
+      }
+    )
+  }).then(() => orderObject)
+}
+
+const showTotal = orderObject => {
+  return new Promise((resolve, reject) => {
+    let id = orderObject.id
+    let quant = orderObject.quant
+    connection.query(
+      'SELECT price FROM products WHERE item_id = ?', [id], (err, res) => {
+        if (err) reject(err)
+        let orderTotal = res[0]['price'] * quant
+        resolve(orderTotal)
+      }
+    )
+  })
+  .then(orderTotal => console.log(`Order Complete! Your total was $${orderTotal}`))
+}
+
+
+
 const shopper = () => {
   querySelection()
     .then(array => promptItem(array))
     .then(item => queryQuantity(item))
     .then(stockQuantity => promptQuantity(stockQuantity))
-    .then(result => console.log(result))
+    .then(order => placeOrder(order))
+    .then(order => showTotal(order))
+    .then(() => {
+      connection.end()
+    })
     .catch(err => console.log(err))  
 }
 
@@ -101,5 +135,3 @@ const shopper = () => {
 
 shopper();
 
-// queryQuantity({itemID:1}).then(x=>console.log(x))
-// promptQuantity({ quant: 100, id: 1 }).then(x=>console.log(x))
