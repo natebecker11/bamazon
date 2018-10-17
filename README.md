@@ -1,2 +1,2 @@
 # bamazon
-A CLI app using for tracking and managing inventory using node.js and MySQL
+A CLI app for tracking and managing inventory using node.js and MySQL
