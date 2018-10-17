@@ -1,0 +1,28 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "CLI app for tracking and managing inventory using MySQL",
+  "main": "customer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/natebecker11/bamazon.git"
+  },
+  "keywords": [
+    "CLI",
+    "MySQL"
+  ],
+  "author": "Nate Becker",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/natebecker11/bamazon/issues"
+  },
+  "homepage": "https://github.com/natebecker11/bamazon#readme",
+  "dependencies": {
+    "dotenv": "^6.1.0",
+    "inquirer": "^6.2.0",
+    "mysql": "^2.16.0"
+  }
+}
