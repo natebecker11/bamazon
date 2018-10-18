@@ -13,4 +13,7 @@ VALUES ('Red Dead Redemption 2', 'Video Games', 59.99, 100),
 ('Gloomhaven', 'Board Games', 149.99, 6),
 ('7th Continent', 'Board Games', 89.99, 0);
 
+ALTER TABLE products
+ADD product_sales INT;
+
 SELECT * FROM products;
