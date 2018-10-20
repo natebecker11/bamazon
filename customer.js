@@ -126,12 +126,12 @@ const postTotal = (orderObject) => {
   
   return new Promise((resolve, reject) => {
     let id = orderObject.orderID
-    let total = orderObject.orderTotal
+    let total = Number(orderObject.orderTotal)
     // console.log(id, total)
     connection.query(
       'UPDATE products SET product_sales = product_sales + ? WHERE item_id = ?', [total, id], (err, res) => {
         if (err) reject(err)
-        console.log(res);
+        // console.log(res);
         resolve(res);
       }
     )
@@ -147,6 +147,7 @@ const shopper = () => {
     .then(stockQuantity => promptQuantity(stockQuantity))
     .then(order => placeOrder(order))
     .then(order => showTotal(order))
+    .then(order=> postTotal(order))
     .then(() => {
       connection.end()
     })
@@ -155,9 +156,4 @@ const shopper = () => {
 
 
 
-// shopper();
-postTotal({
-  orderTotal: 0,
-  orderID: 3
-});
-
+shopper();
