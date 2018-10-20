@@ -46,4 +46,23 @@ const viewSalesByDept = (dept) => {
   .then(tabled => console.log(table(tabled, tableConfig)))
 }
 
-viewSalesByDept();
+const addNewDepartment = () => {
+  inquirer.prompt([
+    {
+      name: deptName,
+      message: 'Enter department name.'
+    },
+    {
+      name: deptOverhead,
+      message: 'Enter the department overhead costs.',
+      validate: input => {
+        if (isNaN(input) || input < 0) return 'Please enter a positive number.'          
+        return true;
+      }
+    }
+  ]).then(res => {
+    connection.query(
+      'INSERT INTO departments (department_name, overhead_costs) VALUES (?,?)', [res.deptName, ]
+    )
+  })
+}
