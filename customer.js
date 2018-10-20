@@ -108,12 +108,34 @@ const showTotal = orderObject => {
     connection.query(
       'SELECT price FROM products WHERE item_id = ?', [id], (err, res) => {
         if (err) reject(err)
-        let orderTotal = res[0]['price'] * quant
-        resolve(orderTotal)
+        let orderTotal = res[0]['price'] * quant        
+        resolve({
+          orderTotal: orderTotal,
+          orderID: id
+        })
       }
     )
   })
-  .then(orderTotal => console.log(`Order Complete! Your total was $${orderTotal}`))
+  .then(order => {
+    console.log(`Order Complete! Your total was $${order.orderTotal}`)
+    return order
+  })
+}
+
+const postTotal = (orderObject) => {
+  
+  return new Promise((resolve, reject) => {
+    let id = orderObject.orderID
+    let total = orderObject.orderTotal
+    // console.log(id, total)
+    connection.query(
+      'UPDATE products SET product_sales = product_sales + ? WHERE item_id = ?', [total, id], (err, res) => {
+        if (err) reject(err)
+        console.log(res);
+        resolve(res);
+      }
+    )
+  })
 }
 
 
@@ -133,5 +155,9 @@ const shopper = () => {
 
 
 
-shopper();
+// shopper();
+postTotal({
+  orderTotal: 0,
+  orderID: 3
+});
 
