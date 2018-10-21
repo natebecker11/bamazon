@@ -44,16 +44,17 @@ const viewSalesByDept = (dept) => {
     return tablify(results, 'id', 'Department', 'overhead', 'TotalSales', 'NetProfit')
   })
   .then(tabled => console.log(table(tabled, tableConfig)))
+  .then(() => menuPrompt())
 }
 
 const addNewDepartment = () => {
   inquirer.prompt([
     {
-      name: deptName,
+      name: 'deptName',
       message: 'Enter department name.'
     },
     {
-      name: deptOverhead,
+      name: 'deptOverhead',
       message: 'Enter the department overhead costs.',
       validate: input => {
         if (isNaN(input) || input < 0) return 'Please enter a positive number.'          
@@ -62,7 +63,45 @@ const addNewDepartment = () => {
     }
   ]).then(res => {
     connection.query(
-      'INSERT INTO departments (department_name, overhead_costs) VALUES (?,?)', [res.deptName, ]
+      'INSERT INTO departments (department_name, over_head_costs) VALUES (?,?)', [res.deptName, res.deptOverhead]
     )
-  })
+  }).then(() => menuPrompt())
+    
 }
+
+
+
+const quitMenu = () => {
+  connection.end()
+}
+
+const menuPrompt = () => {
+  inquirer.prompt([
+    {
+      name: 'choice',
+      type: 'list',
+      message: 'What would you like to do?',
+      choices: [
+        {
+          value: viewSalesByDept,
+          name: 'View Sales By Department.',
+          short: 'View Sales.'
+        },
+        {
+          value: addNewDepartment,
+          name: 'Add New Department.',
+          short: 'Add New Department.'
+        },
+        {
+          value: quitMenu,
+          name: 'Quit.',
+          short: 'Quit.'
+        }
+      ]    
+    }
+  ]).then(x => x.choice())
+    .catch(err => console.log(err))
+  
+}
+// addNewDepartment();
+menuPrompt();
