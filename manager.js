@@ -1,3 +1,4 @@
+// dependencies
 const dotenv = require('dotenv')
 dotenv.config()
 const keys = require('./keys.js')
@@ -7,18 +8,15 @@ const {table, getBorderCharacters} = require('table');
 const tableConfig = {
   border: getBorderCharacters('honeywell')
 }
-
+// local mysql database connection
 const connection = mysql.createConnection({
   host: 'localhost',
-
   port: 3306,
-
   user: 'root',
-
   password: keys.MySQL.pw,
   database: 'bamazon'
 })
-
+// Utility function, takes a MySQL database table output and a list of column headers, returns an array of arrays representing a table, formatted for the 'table' NPM package
 const tablify = (aoo, ...keys) => {
   let tabled = aoo.map(obj => {
     let row = keys.map(key => obj[key])
@@ -27,7 +25,7 @@ const tablify = (aoo, ...keys) => {
   tabled.unshift(keys)
   return tabled
 }
-
+// Function to display available products in a table
 const viewProducts = () => {
   return new Promise((resolve, reject) => {
     connection.query(
@@ -44,7 +42,7 @@ const viewProducts = () => {
     menuPrompt()
   })
 }
-
+// Function to display items with low inventory
 const viewLowInv = () => {
   return new Promise((resolve, reject) => { 
     connection.query(
@@ -61,12 +59,13 @@ const viewLowInv = () => {
     menuPrompt()
   })
 }
-
+// Function to add to inventory
 const addInv = () => {
   return new Promise((resolve, reject) => {
     connection.query(
       'SELECT item_id, product_name FROM products', (err, res) => {
         if (err) reject(err)
+        // create array of choices for the prompt below
         let choiceArray = res.map(item => {
           return {
             name: item.product_name,
@@ -112,7 +111,7 @@ const addInv = () => {
     menuPrompt()
   })
 }
-
+// function to add a new product
 const addNewProd = () => {
   inquirer.prompt([
     {
@@ -163,7 +162,7 @@ const addNewProd = () => {
 const quitMenu = () => {
   connection.end()
 }
-
+// main functionality, calls a each list choice supplies a function name which is called in the then() that follows
 const menuPrompt = () => {
   inquirer.prompt([
     {
