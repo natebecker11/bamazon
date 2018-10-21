@@ -113,41 +113,51 @@ const addInv = () => {
 }
 // function to add a new product
 const addNewProd = () => {
-  inquirer.prompt([
-    {
-      name: 'product_name',
-      message: 'Enter the product name.'
-    },
-    {
-      name: 'department_name',
-      message: 'Choose a department',
-      type: 'list',
-      choices: ['Video Games', 'Books', 'Appliances', 'Mobile Phones', 'Board Games']
-    },
-    {
-      name: 'price',
-      message: 'Enter the price.',
-      validate: input => {
-        if (isNaN(input) || input < 0) return 'Please enter a positive number.'          
-        return true;
+  return new Promise((resolve, reject) => {
+    connection.query(
+      'SELECT department_name FROM departments', (err, res) => {
+        if (err) console.log(err)
+        let deptNames = res.map(dept => dept.department_name)
+        resolve(deptNames)
       }
-    },
-    {
-      name: 'stock_quantity',
-      message: 'Enter the initial stock quantity.',
-      validate: input => {
-        if (isNaN(input) || input < 0 || input % 1 !== 0) return 'Please enter a positive, whole number.'          
-        return true;
-      }
-    },
-  ])
+    )
+  }).then(deptArray => {
+    return inquirer.prompt([
+      {
+        name: 'product_name',
+        message: 'Enter the product name.'
+      },
+      {
+        name: 'department_name',
+        message: 'Choose a department',
+        type: 'list',
+        choices: deptArray
+      },
+      {
+        name: 'price',
+        message: 'Enter the price.',
+        validate: input => {
+          if (isNaN(input) || input < 0) return 'Please enter a positive number.'          
+          return true;
+        }
+      },
+      {
+        name: 'stock_quantity',
+        message: 'Enter the initial stock quantity.',
+        validate: input => {
+          if (isNaN(input) || input < 0 || input % 1 !== 0) return 'Please enter a positive, whole number.'          
+          return true;
+        }
+      },
+    ])
+  })  
   .then(item => {
     let pN = item.product_name
     let pD = item.department_name
     let pP = Number(item.price)
     let pS = Number(item.stock_quantity)
     return connection.query(
-      'INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?)', [pN, pD, pP, pS], (err, res) => {
+      'INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales) VALUES (?, ?, ?, ?, 0)', [pN, pD, pP, pS], (err, res) => {
         if (err) throw err        
       }
     )
