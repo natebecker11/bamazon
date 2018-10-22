@@ -2,11 +2,13 @@
 A CLI app for tracking and managing inventory using node.js and MySQL
 
 ## Overview
-This app allows simulates how users with a variety of roles might interface with an inventory system. 
+This app simulates how users with a variety of roles might interface with an inventory system. 
 
-**Customers** can view available inventory and make a purchase. **Managers** can view and audit inventory levels, replenish stock, and add new SKUs. **Supervisors** can get an overview of sales for each department, and add new departments.
+* **Customers** can view available inventory and make a purchase. 
+* **Managers** can view and audit inventory levels, replenish stock, and add new SKUs. 
+* **Supervisors** can get an overview of sales for each department, and add new departments.
 
-All above functionality is accessed through the command line, and results are given in the command line.
+All three are accessed through the command line, and results are given in the command line.
 
 ## Setting up the app
 ### 1. Clone or download this repository
@@ -36,7 +38,7 @@ Create a new file, called '.env' in the directory where the app is installed. Pa
 
 ```
 #MySQL credentials
-MYSQL_PASSWORD=tiggerTiger1
+MYSQL_PASSWORD=YOUR_PASSWORD_HERE
 ```
 This file is used by the app to interact with MySQL.
 
